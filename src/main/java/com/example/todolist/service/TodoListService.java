@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -62,5 +64,11 @@ public class TodoListService {
 
             return "Can't create todo";
         }
+    }
+
+    public List<Todo> getTodos() {
+        return todoReposistory.findAll().stream()
+                .sorted((todo1, todo2) -> todo2.getDate().compareTo(todo1.getDate()))
+                .collect(Collectors.toList());
     }
 }

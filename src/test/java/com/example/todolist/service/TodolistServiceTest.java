@@ -10,7 +10,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -104,5 +108,20 @@ public class TodolistServiceTest {
         assertThat(todoArgumentCaptor.getValue().getTodo(), is("Buy milk"));
         assertThat(todoArgumentCaptor.getValue().getDate(), is(expectDate));
         assertThat(todoArgumentCaptor.getValue().getTime(), is("13:00"));
+    }
+
+    @Test
+    public void testGetTodos() {
+        Todo todo1 = new Todo(UUID.randomUUID(), "test", LocalDate.now(), "13:00");
+        Todo todo2 = new Todo(UUID.randomUUID(), "test", LocalDate.now(), "14:00");
+        Todo todo3 = new Todo(UUID.randomUUID(), "test", LocalDate.now().plusDays(1), "13:00");
+        List<Todo> todos = Arrays.asList(todo1, todo2, todo3);
+        doReturn(todos).when(todoReposistory).findAll();
+
+        List<Todo> todoList = todoListService.getTodos();
+
+        assertThat(todoList.get(0), equalTo(todo3));
+        assertThat(todoList.get(1), equalTo(todo1));
+        assertThat(todoList.get(2), equalTo(todo2));
     }
 }
