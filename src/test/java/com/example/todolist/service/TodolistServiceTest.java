@@ -19,6 +19,8 @@ import static org.mockito.Mockito.doThrow;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TodolistServiceTest {
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yy");
+
     @Mock
     private TodoReposistory todoReposistory;
 
@@ -45,6 +47,21 @@ public class TodolistServiceTest {
     }
 
     @Test
+    public void testCreateTodoWhenTimeIsEmpty() {
+        String msg = "Buy milk : 2/5/18";
+        ArgumentCaptor<Todo> todoArgumentCaptor = ArgumentCaptor.forClass(Todo.class);
+        doReturn(null).when(todoReposistory).save(todoArgumentCaptor.capture());
+
+        String txt = todoListService.createTodo(msg);
+
+        LocalDate expectDate = LocalDate.parse("2/5/18", formatter);
+        assertThat(txt, is("your todo on 2/5/18 : 12:00 is Buy milk"));
+        assertThat(todoArgumentCaptor.getValue().getTodo(), is("Buy milk"));
+        assertThat(todoArgumentCaptor.getValue().getDate(), is(expectDate));
+        assertThat(todoArgumentCaptor.getValue().getTime(), is("12:00"));
+    }
+
+    @Test
     public void testCreateTodoWhenFormatDateIsDateFormat() {
         String msg = "Buy milk : 2/5/18 : 13:00";
         ArgumentCaptor<Todo> todoArgumentCaptor = ArgumentCaptor.forClass(Todo.class);
@@ -52,9 +69,10 @@ public class TodolistServiceTest {
 
         String txt = todoListService.createTodo(msg);
 
+        LocalDate expectDate = LocalDate.parse("2/5/18", formatter);
         assertThat(txt, is("your todo on 2/5/18 : 13:00 is Buy milk"));
         assertThat(todoArgumentCaptor.getValue().getTodo(), is("Buy milk"));
-        assertThat(todoArgumentCaptor.getValue().getDate(), is("2/5/18"));
+        assertThat(todoArgumentCaptor.getValue().getDate(), is(expectDate));
         assertThat(todoArgumentCaptor.getValue().getTime(), is("13:00"));
     }
 
@@ -66,8 +84,8 @@ public class TodolistServiceTest {
 
         String txt = todoListService.createTodo(msg);
 
-        String expectDate = LocalDate.now().format(DateTimeFormatter.ofPattern("d/M/YY"));
-        assertThat(txt, is("your todo on " + expectDate + " : 13:00 is Buy milk"));
+        LocalDate expectDate = LocalDate.now();
+        assertThat(txt, is("your todo on " + expectDate.format(formatter) + " : 13:00 is Buy milk"));
         assertThat(todoArgumentCaptor.getValue().getTodo(), is("Buy milk"));
         assertThat(todoArgumentCaptor.getValue().getDate(), is(expectDate));
         assertThat(todoArgumentCaptor.getValue().getTime(), is("13:00"));
@@ -81,8 +99,8 @@ public class TodolistServiceTest {
 
         String txt = todoListService.createTodo(msg);
 
-        String expectDate = LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("d/M/YY"));
-        assertThat(txt, is("your todo on " + expectDate + " : 13:00 is Buy milk"));
+        LocalDate expectDate = LocalDate.now().plusDays(1);
+        assertThat(txt, is("your todo on " + expectDate.format(formatter) + " : 13:00 is Buy milk"));
         assertThat(todoArgumentCaptor.getValue().getTodo(), is("Buy milk"));
         assertThat(todoArgumentCaptor.getValue().getDate(), is(expectDate));
         assertThat(todoArgumentCaptor.getValue().getTime(), is("13:00"));
