@@ -1,6 +1,7 @@
 package com.example.todolist.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @ToString
+@Builder(toBuilder = true)
 public class Todo {
     public Todo() {
     }

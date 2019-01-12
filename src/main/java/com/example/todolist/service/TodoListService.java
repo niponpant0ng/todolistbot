@@ -4,6 +4,7 @@ import com.example.todolist.model.Todo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -74,5 +75,23 @@ public class TodoListService {
                     return todoSort2.compareTo(todoSort1);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Todo isImportant(UUID id) {
+        Todo todo = todoReposistory.getOne(id);
+        todo.setIsImportant(true);
+        todo = todoReposistory.save(todo);
+
+        return todo.toBuilder().build();
+    }
+
+    @Transactional
+    public Todo isFinished(UUID id) {
+        Todo todo = todoReposistory.getOne(id);
+        todo.setIsFinished(true);
+        todo = todoReposistory.save(todo);
+
+        return todo.toBuilder().build();
     }
 }
