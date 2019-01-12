@@ -1,4 +1,4 @@
-package com.example.todolist;
+package com.example.todolist.controller;
 
 import com.example.todolist.service.TodoListService;
 import com.linecorp.bot.model.event.Event;
@@ -11,7 +11,7 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @LineMessageHandler
-public class TodolistController {
+public class TodolistMessageController {
     @Autowired
     private TodoListService todoListService;
 
