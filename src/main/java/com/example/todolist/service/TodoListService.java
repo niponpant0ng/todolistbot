@@ -54,7 +54,7 @@ public class TodoListService {
         }
 
         try {
-            Todo todoList = new Todo(UUID.randomUUID(), todo, date, time);
+            Todo todoList = new Todo(UUID.randomUUID(), todo, date, time, false, false);
             todoReposistory.save(todoList);
             log.info("message {} is created", todoList);
 
@@ -68,7 +68,11 @@ public class TodoListService {
 
     public List<Todo> getTodos() {
         return todoReposistory.findAll().stream()
-                .sorted((todo1, todo2) -> todo2.getDate().compareTo(todo1.getDate()))
+                .sorted((todo1, todo2) -> {
+                    String todoSort1 = todo1.getIsImportant()? "1": "0" + todo1.getDate() + todo1.getTime();
+                    String todoSort2 = todo2.getIsImportant()? "1": "0" + todo2.getDate() + todo2.getTime();
+                    return todoSort2.compareTo(todoSort1);
+                })
                 .collect(Collectors.toList());
     }
 }

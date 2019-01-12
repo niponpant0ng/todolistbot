@@ -63,6 +63,8 @@ public class TodolistServiceTest {
         assertThat(todoArgumentCaptor.getValue().getTodo(), is("Buy milk"));
         assertThat(todoArgumentCaptor.getValue().getDate(), is(expectDate));
         assertThat(todoArgumentCaptor.getValue().getTime(), is("12:00"));
+        assertThat(todoArgumentCaptor.getValue().getIsFinished(), is(false));
+        assertThat(todoArgumentCaptor.getValue().getIsImportant(), is(false));
     }
 
     @Test
@@ -78,6 +80,8 @@ public class TodolistServiceTest {
         assertThat(todoArgumentCaptor.getValue().getTodo(), is("Buy milk"));
         assertThat(todoArgumentCaptor.getValue().getDate(), is(expectDate));
         assertThat(todoArgumentCaptor.getValue().getTime(), is("13:00"));
+        assertThat(todoArgumentCaptor.getValue().getIsFinished(), is(false));
+        assertThat(todoArgumentCaptor.getValue().getIsImportant(), is(false));
     }
 
     @Test
@@ -93,6 +97,8 @@ public class TodolistServiceTest {
         assertThat(todoArgumentCaptor.getValue().getTodo(), is("Buy milk"));
         assertThat(todoArgumentCaptor.getValue().getDate(), is(expectDate));
         assertThat(todoArgumentCaptor.getValue().getTime(), is("13:00"));
+        assertThat(todoArgumentCaptor.getValue().getIsFinished(), is(false));
+        assertThat(todoArgumentCaptor.getValue().getIsImportant(), is(false));
     }
 
     @Test
@@ -108,20 +114,37 @@ public class TodolistServiceTest {
         assertThat(todoArgumentCaptor.getValue().getTodo(), is("Buy milk"));
         assertThat(todoArgumentCaptor.getValue().getDate(), is(expectDate));
         assertThat(todoArgumentCaptor.getValue().getTime(), is("13:00"));
+        assertThat(todoArgumentCaptor.getValue().getIsFinished(), is(false));
+        assertThat(todoArgumentCaptor.getValue().getIsImportant(), is(false));
     }
 
     @Test
     public void testGetTodos() {
-        Todo todo1 = new Todo(UUID.randomUUID(), "test", LocalDate.now(), "13:00");
-        Todo todo2 = new Todo(UUID.randomUUID(), "test", LocalDate.now(), "14:00");
-        Todo todo3 = new Todo(UUID.randomUUID(), "test", LocalDate.now().plusDays(1), "13:00");
+        Todo todo1 = new Todo(UUID.randomUUID(), "test", LocalDate.now(), "13:00", false, false);
+        Todo todo2 = new Todo(UUID.randomUUID(), "test", LocalDate.now(), "14:00", false, false);
+        Todo todo3 = new Todo(UUID.randomUUID(), "test", LocalDate.now().plusDays(1), "13:00", false, false);
         List<Todo> todos = Arrays.asList(todo1, todo2, todo3);
         doReturn(todos).when(todoReposistory).findAll();
 
         List<Todo> todoList = todoListService.getTodos();
 
         assertThat(todoList.get(0), equalTo(todo3));
-        assertThat(todoList.get(1), equalTo(todo1));
-        assertThat(todoList.get(2), equalTo(todo2));
+        assertThat(todoList.get(1), equalTo(todo2));
+        assertThat(todoList.get(2), equalTo(todo1));
+    }
+
+    @Test
+    public void testGetTodosWhenSomeTodoIsImportant() {
+        Todo todo1 = new Todo(UUID.randomUUID(), "test", LocalDate.now(), "13:00", false, false);
+        Todo todo2 = new Todo(UUID.randomUUID(), "test", LocalDate.now(), "14:00", true, false);
+        Todo todo3 = new Todo(UUID.randomUUID(), "test", LocalDate.now().plusDays(1), "13:00", false, false);
+        List<Todo> todos = Arrays.asList(todo1, todo2, todo3);
+        doReturn(todos).when(todoReposistory).findAll();
+
+        List<Todo> todoList = todoListService.getTodos();
+
+        assertThat(todoList.get(0), equalTo(todo2));
+        assertThat(todoList.get(1), equalTo(todo3));
+        assertThat(todoList.get(2), equalTo(todo1));
     }
 }

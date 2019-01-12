@@ -24,4 +24,6 @@ public class Todo {
     private String todo;
     private LocalDate date;
     private String time;
+    private Boolean isImportant;
+    private Boolean isFinished;
 }
